@@ -94,6 +94,13 @@ async def init_db() -> None:
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             )
         """))
+        # High-performance indexes for fast ranking, lookups, and vector search
+        await conn.execute(text("CREATE INDEX IF NOT EXISTS idx_user_stats_score ON user_stats (composite_score DESC)"))
+        await conn.execute(text("CREATE INDEX IF NOT EXISTS idx_users_college ON users (college)"))
+        await conn.execute(text("CREATE INDEX IF NOT EXISTS idx_user_follows_follower ON user_follows (follower_id)"))
+        await conn.execute(text("CREATE INDEX IF NOT EXISTS idx_user_follows_following ON user_follows (following_id)"))
+        await conn.execute(text("CREATE INDEX IF NOT EXISTS idx_rag_chunks_hnsw ON rag_document_chunks USING hnsw (embedding vector_cosine_ops)"))
+        await conn.execute(text("CREATE INDEX IF NOT EXISTS idx_interview_hnsw ON interview_posts USING hnsw (embedding vector_cosine_ops)"))
         # Ensure initial superuser admin access exists
         await conn.execute(text("""
             UPDATE users SET is_admin = TRUE 

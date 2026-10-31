@@ -25,11 +25,11 @@ class Settings(BaseSettings):
     # --- Gemini AI ---
     GEMINI_API_KEY: str = ""
     GEMINI_EMBEDDING_MODEL: str = "models/gemini-embedding-001"
-    GEMINI_GENERATION_MODEL: str = "models/gemini-3.8-flash"
+    GEMINI_GENERATION_MODEL: str = "models/gemini-3.1-flash-lite"
     EMBEDDING_DIM: int = 768
 
     # --- Fetcher ---
-    PLATFORM_FETCH_TIMEOUT_SECONDS: float = 12.0
+    PLATFORM_FETCH_TIMEOUT_SECONDS: float = 6.0
 
     # --- CORS ---
     CORS_ALLOW_ORIGINS: list[str] = [

@@ -151,3 +151,14 @@ explains its role. High-level map:
     - Pre-populated platform inputs with judge logos and helper text.
   - Unified serving: Accessible via both `http://localhost:5500` (static) and directly via `http://localhost:8000/app`.
   values only ever live in `backend/.env`.
+
+
+
+'''
+python -m http.server 5500 --directory frontend
+'''
+
+'''
+cd backend
+python -m uvicorn app.main:app --port 8000 --reload
+'''

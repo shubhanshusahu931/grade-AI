@@ -23,10 +23,13 @@ function showView(view) {
 
 async function syncUserData(dashboard) {
   try {
-    const user = await fetchCurrentUser();
-    setUser(user);
-    if (dashboard) {
-      await dashboard.loadCachedStats();
+    const [user] = await Promise.all([
+      fetchCurrentUser(),
+      dashboard ? dashboard.loadCachedStats() : Promise.resolve(),
+    ]);
+    if (user) {
+      setUser(user);
+      if (dashboard) dashboard.refreshFromState();
     }
   } catch {
     // If token invalid, auth error handler in api.js clears token
@@ -83,8 +86,10 @@ function bootstrap() {
     onAuthenticated: async () => {
       navigateTo("dashboard");
       await syncUserData(dashboard);
-      // Run sync in background if never synced
-      dashboard.runSync();
+      // Run sync in background only if never synced before
+      if (!state.latestSync) {
+        dashboard.runSync();
+      }
     },
   });
 

@@ -12,6 +12,7 @@ RAG Pipeline powered by Google Gemini and PostgreSQL pgvector:
        fallback directly to Google Gemini's broad programming & interview intelligence.
 """
 from dataclasses import dataclass
+import asyncio
 import logging
 
 import google.generativeai as genai
@@ -26,6 +27,10 @@ from app.schemas.rag import RagSourceChunk
 logger = logging.getLogger("industry_grade_ai.rag")
 
 SIMILARITY_THRESHOLD = 0.62
+
+# In-memory LRU embedding cache for instant sub-millisecond repeated queries
+_EMBEDDING_CACHE: dict[str, list[float]] = {}
+_MAX_CACHE_SIZE = 512
 
 
 @dataclass
@@ -46,38 +51,83 @@ def _configure_gemini() -> None:
         genai.configure(api_key=settings.GEMINI_API_KEY, transport="rest")
 
 
+def _sync_embed_text(text: str, task_type: str) -> list[float]:
+    _configure_gemini()
+    try:
+        result = genai.embed_content(
+            model=settings.GEMINI_EMBEDDING_MODEL,
+            content=text,
+            task_type=task_type,
+            output_dimensionality=settings.EMBEDDING_DIM,
+        )
+    except Exception:
+        result = genai.embed_content(
+            model=settings.GEMINI_EMBEDDING_MODEL,
+            content=text,
+            task_type=task_type,
+        )
+    embedding = result["embedding"]
+    if len(embedding) > settings.EMBEDDING_DIM:
+        embedding = embedding[: settings.EMBEDDING_DIM]
+    return embedding
+
+
 async def embed_text(text: str, task_type: str = "retrieval_query") -> list[float]:
-    """Embed a piece of text into a 768-dim vector using Gemini."""
+    """Embed a piece of text into a 768-dim vector using Gemini with thread offloading and caching."""
     if not settings.GEMINI_API_KEY:
         raise RagError("GEMINI_API_KEY is not configured on the server")
 
-    _configure_gemini()
+    cache_key = f"{task_type}:{text.strip().lower()}"
+    if cache_key in _EMBEDDING_CACHE:
+        return _EMBEDDING_CACHE[cache_key]
+
     try:
-        try:
-            result = genai.embed_content(
-                model=settings.GEMINI_EMBEDDING_MODEL,
-                content=text,
-                task_type=task_type,
-                output_dimensionality=settings.EMBEDDING_DIM,
-            )
-        except Exception:
-            result = genai.embed_content(
-                model=settings.GEMINI_EMBEDDING_MODEL,
-                content=text,
-                task_type=task_type,
-            )
-        embedding = result["embedding"]
-        if len(embedding) > settings.EMBEDDING_DIM:
-            embedding = embedding[: settings.EMBEDDING_DIM]
+        embedding = await asyncio.wait_for(
+            asyncio.to_thread(_sync_embed_text, text, task_type),
+            timeout=6.0,
+        )
+        if len(_EMBEDDING_CACHE) >= _MAX_CACHE_SIZE:
+            # Evict first 100 items
+            for k in list(_EMBEDDING_CACHE.keys())[:100]:
+                del _EMBEDDING_CACHE[k]
+        _EMBEDDING_CACHE[cache_key] = embedding
         return embedding
     except Exception as exc:  # noqa: BLE001
         logger.exception("Gemini single embedding failed: %s", exc)
         raise RagError(f"Embedding failed: {exc}") from exc
 
 
+def _sync_embed_batch(batch: list[str], task_type: str) -> list[list[float]]:
+    _configure_gemini()
+    try:
+        res = genai.embed_content(
+            model=settings.GEMINI_EMBEDDING_MODEL,
+            content=batch,
+            task_type=task_type,
+            output_dimensionality=settings.EMBEDDING_DIM,
+        )
+    except Exception:
+        res = genai.embed_content(
+            model=settings.GEMINI_EMBEDDING_MODEL,
+            content=batch,
+            task_type=task_type,
+        )
+
+    raw_embs = res["embedding"]
+    if batch and isinstance(raw_embs[0], float):
+        raw_embs = [raw_embs]
+
+    clean_embs: list[list[float]] = []
+    for emb in raw_embs:
+        if len(emb) > settings.EMBEDDING_DIM:
+            emb = emb[: settings.EMBEDDING_DIM]
+        clean_embs.append(emb)
+    return clean_embs
+
+
 async def embed_chunks_batch(
     chunks: list[str],
-    batch_size: int = 10,
+    batch_size: int = 15,
     task_type: str = "retrieval_document",
 ) -> list[list[float]]:
     """
@@ -86,39 +136,18 @@ async def embed_chunks_batch(
     if not settings.GEMINI_API_KEY:
         raise RagError("GEMINI_API_KEY is not configured on the server")
 
-    _configure_gemini()
     all_embeddings: list[list[float]] = []
 
     for i in range(0, len(chunks), batch_size):
         batch = chunks[i : i + batch_size]
         try:
-            try:
-                res = genai.embed_content(
-                    model=settings.GEMINI_EMBEDDING_MODEL,
-                    content=batch,
-                    task_type=task_type,
-                    output_dimensionality=settings.EMBEDDING_DIM,
-                )
-            except Exception:
-                res = genai.embed_content(
-                    model=settings.GEMINI_EMBEDDING_MODEL,
-                    content=batch,
-                    task_type=task_type,
-                )
-
-            raw_embs = res["embedding"]
-            # raw_embs can be list of vectors or single vector if 1 item
-            if batch and isinstance(raw_embs[0], float):
-                raw_embs = [raw_embs]
-
-            for emb in raw_embs:
-                if len(emb) > settings.EMBEDDING_DIM:
-                    emb = emb[: settings.EMBEDDING_DIM]
-                all_embeddings.append(emb)
-
+            batch_embs = await asyncio.wait_for(
+                asyncio.to_thread(_sync_embed_batch, batch, task_type),
+                timeout=12.0,
+            )
+            all_embeddings.extend(batch_embs)
         except Exception as exc:
             logger.warning("Batch embedding chunk %d..%d failed (%s), falling back one by one", i, i + len(batch), exc)
-            # Fallback one by one
             for single_chunk in batch:
                 single_emb = await embed_text(single_chunk, task_type=task_type)
                 all_embeddings.append(single_emb)
@@ -208,13 +237,21 @@ def _build_context_summary(query: str, snippets: list[RetrievedSnippet]) -> str:
     return "\n".join(lines)
 
 
-async def generate_gemini_response(prompt: str) -> str:
-    """Executes Gemini generation with prioritized fallback models."""
+def _sync_generate(model_name: str, prompt: str) -> str:
     _configure_gemini()
+    model = genai.GenerativeModel(model_name)
+    response = model.generate_content(prompt)
+    if response and response.text:
+        return response.text.strip()
+    return ""
+
+
+async def generate_gemini_response(prompt: str) -> str:
+    """Executes Gemini generation with prioritized fast models and strict timeout per model."""
     models_to_try = [
-        settings.GEMINI_GENERATION_MODEL,
-        "models/gemini-3.8-flash",
-        "models/gemini-3.1-flash-lite",
+        settings.GEMINI_GENERATION_MODEL,  # models/gemini-3.1-flash-lite (~1.5s)
+        "models/gemini-3-flash-preview",    # (~1.9s)
+        "models/gemini-3.5-flash-lite",
         "models/gemini-flash-latest",
     ]
 
@@ -227,10 +264,12 @@ async def generate_gemini_response(prompt: str) -> str:
     last_exc = None
     for model_name in candidates:
         try:
-            model = genai.GenerativeModel(model_name)
-            response = model.generate_content(prompt)
-            if response and response.text:
-                return response.text.strip()
+            answer = await asyncio.wait_for(
+                asyncio.to_thread(_sync_generate, model_name, prompt),
+                timeout=7.0,
+            )
+            if answer:
+                return answer
         except Exception as exc:  # noqa: BLE001
             logger.warning("Generation with %s failed (%s), attempting next candidate...", model_name, exc)
             last_exc = exc

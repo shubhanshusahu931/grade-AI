@@ -53,7 +53,10 @@ async def fetch_all_platforms(
     def resolved(key: str) -> str | None:
         return handles.get(key) or fallback_prefix
 
-    async with httpx.AsyncClient(timeout=TIMEOUT, follow_redirects=True) as client:
+    limits = httpx.Limits(max_keepalive_connections=20, max_connections=30)
+    timeout_config = httpx.Timeout(TIMEOUT, connect=2.5, read=TIMEOUT)
+
+    async with httpx.AsyncClient(timeout=timeout_config, limits=limits, follow_redirects=True) as client:
         cf = CodeforcesScraper(client)
         lc = LeetCodeScraper(client)
         cc = CodeChefScraper(client)
@@ -64,19 +67,25 @@ async def fetch_all_platforms(
         tuf = TakeUForwardScraper(client)
         cn = CodingNinjasScraper(client)
 
-        tasks = [
-            _safe_call(cf.fetch(handle=resolved("codeforces")), "codeforces"),
-            _safe_call(lc.fetch(handle=resolved("leetcode")), "leetcode"),
-            _safe_call(cc.fetch(handle=resolved("codechef")), "codechef"),
-            _safe_call(gfg.fetch(handle=resolved("gfg")), "gfg"),
-            _safe_call(hr.fetch(handle=resolved("hackerrank")), "hackerrank"),
+        ct_task = (
             _safe_call(
                 ct.fetch(
                     college_url=handles.get("codetantra_url"),
                     student_id=handles.get("codetantra_id") or fallback_prefix,
                 ),
                 "codetantra",
-            ),
+            )
+            if handles.get("codetantra_url")
+            else asyncio.sleep(0, result=PlatformResult(platform="codetantra", success=False, error="Portal URL not configured"))
+        )
+
+        tasks = [
+            _safe_call(cf.fetch(handle=resolved("codeforces")), "codeforces"),
+            _safe_call(lc.fetch(handle=resolved("leetcode")), "leetcode"),
+            _safe_call(cc.fetch(handle=resolved("codechef")), "codechef"),
+            _safe_call(gfg.fetch(handle=resolved("gfg")), "gfg"),
+            _safe_call(hr.fetch(handle=resolved("hackerrank")), "hackerrank"),
+            ct_task,
             _safe_call(he.fetch(handle=resolved("hackerearth")), "hackerearth"),
             _safe_call(tuf.fetch(handle=resolved("takeuforward")), "takeuforward"),
             _safe_call(cn.fetch(handle=resolved("codingninjas")), "codingninjas"),

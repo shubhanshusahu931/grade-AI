@@ -54,7 +54,9 @@ export function initLeaderboardView() {
   }
 
   async function load() {
-    if (body) body.innerHTML = `<tr><td colspan="5" class="empty-row">Loading rankings...</td></tr>`;
+    if (!cachedResponse && body) {
+      body.innerHTML = `<tr><td colspan="5" class="empty-row">Loading rankings...</td></tr>`;
+    }
     try {
       cachedResponse = await fetchLeaderboard(50);
       renderActiveScope();
