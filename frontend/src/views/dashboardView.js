@@ -6,6 +6,7 @@ import { setLatestSync, setView, state } from "../state.js";
 import { renderPlatformChart } from "../components/charts.js";
 import { renderStatsCards } from "../components/statsCards.js";
 import { showToast } from "../components/toast.js";
+import { openFollowListModal } from "../components/followListModal.js";
 
 export function initDashboardView({ onNavigate } = {}) {
   const syncBtn = document.getElementById("syncBtn");
@@ -15,8 +16,26 @@ export function initDashboardView({ onNavigate } = {}) {
   const userBioEl = document.getElementById("dashUserBio");
   const followersCountEl = document.getElementById("dashFollowersCount");
   const followingCountEl = document.getElementById("dashFollowingCount");
+  const followersBadge = document.getElementById("dashFollowersBadge");
+  const followingBadge = document.getElementById("dashFollowingBadge");
   const socialsBarEl = document.getElementById("dashSocialsBar");
   const editProfileBtn = document.getElementById("dashEditProfileBtn");
+
+  if (followersBadge) {
+    followersBadge.addEventListener("click", () => {
+      if (state.user) {
+        openFollowListModal(state.user.id, "followers", { username: state.user.username });
+      }
+    });
+  }
+
+  if (followingBadge) {
+    followingBadge.addEventListener("click", () => {
+      if (state.user) {
+        openFollowListModal(state.user.id, "following", { username: state.user.username });
+      }
+    });
+  }
 
   if (editProfileBtn) {
     editProfileBtn.addEventListener("click", () => {

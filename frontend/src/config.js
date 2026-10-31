@@ -14,6 +14,9 @@ export const PLATFORM_LABELS = {
   gfg: "GeeksforGeeks",
   hackerrank: "HackerRank",
   codetantra: "CodeTantra",
+  hackerearth: "HackerEarth",
+  takeuforward: "TakeUForward",
+  codingninjas: "Coding Ninjas",
 };
 
 export const PLATFORM_META = {
@@ -58,5 +61,26 @@ export const PLATFORM_META = {
     badge: "CT",
     icon: "codetantra",
     urlPrefix: null,
+  },
+  hackerearth: {
+    name: "HackerEarth",
+    color: "#2c3454",
+    badge: "HE",
+    icon: "hackerearth",
+    urlPrefix: "https://www.hackerearth.com/@",
+  },
+  takeuforward: {
+    name: "TakeUForward",
+    color: "#f97316",
+    badge: "TUF",
+    icon: "takeuforward",
+    urlPrefix: "https://takeuforward.org/profile/",
+  },
+  codingninjas: {
+    name: "Coding Ninjas",
+    color: "#ea580c",
+    badge: "CN",
+    icon: "codingninjas",
+    urlPrefix: "https://www.naukri.com/code360/profile/",
   },
 };

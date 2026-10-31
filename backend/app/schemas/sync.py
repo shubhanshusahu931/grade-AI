@@ -14,6 +14,10 @@ class HandlesUpdate(BaseModel):
     hackerrank: str | None = None
     codetantra_url: str | None = None
     codetantra_id: str | None = None
+    hackerearth: str | None = None
+    takeuforward: str | None = None
+    codingninjas: str | None = None
+
 
 
 class PlatformResult(BaseModel):

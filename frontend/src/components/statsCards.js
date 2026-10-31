@@ -78,7 +78,17 @@ function renderPlatformCards(platforms) {
   const cardsGrid = document.getElementById("platformCardsGrid");
   if (!cardsGrid) return;
 
-  const ALL_PLATFORMS = ["codeforces", "leetcode", "codechef", "gfg", "hackerrank", "codetantra"];
+  const ALL_PLATFORMS = [
+    "codeforces",
+    "leetcode",
+    "codechef",
+    "gfg",
+    "hackerrank",
+    "codetantra",
+    "hackerearth",
+    "takeuforward",
+    "codingninjas",
+  ];
   const platformMap = new Map();
   platforms.forEach((p) => platformMap.set(p.platform, p));
 

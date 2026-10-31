@@ -54,6 +54,9 @@ async def sync_profile(
         "hackerrank": handles.hackerrank,
         "codetantra_url": handles.codetantra_url,
         "codetantra_id": handles.codetantra_id,
+        "hackerearth": handles.hackerearth,
+        "takeuforward": handles.takeuforward,
+        "codingninjas": handles.codingninjas,
     }
 
     results: list[PlatformResult] = await fetch_all_platforms(handle_dict, fallback_prefix)
@@ -123,4 +126,7 @@ async def get_user_handles(current_user: User = Depends(get_current_user)):
         hackerrank=h.hackerrank,
         codetantra_url=h.codetantra_url,
         codetantra_id=h.codetantra_id,
+        hackerearth=h.hackerearth,
+        takeuforward=h.takeuforward,
+        codingninjas=h.codingninjas,
     )

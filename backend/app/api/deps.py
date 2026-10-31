@@ -16,7 +16,7 @@ from app.core.security import TokenError, decode_access_token
 from app.db.session import get_db
 from app.models.user import User
 
-__all__ = ["get_db", "get_current_user"]
+__all__ = ["get_db", "get_current_user", "get_admin_user"]
 
 bearer_scheme = HTTPBearer(auto_error=True)
 
@@ -52,3 +52,14 @@ async def get_current_user(
     if user is None:
         raise credentials_exception
     return user
+
+
+async def get_admin_user(current_user: User = Depends(get_current_user)) -> User:
+    """Dependency ensuring the authenticated user has superuser/admin privileges."""
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Administrative privileges required to access this resource",
+        )
+    return current_user
+

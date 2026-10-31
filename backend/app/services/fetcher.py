@@ -19,9 +19,12 @@ from app.schemas.sync import PlatformResult
 from app.services.scrapers.codechef import CodeChefScraper
 from app.services.scrapers.codeforces import CodeforcesScraper
 from app.services.scrapers.codetantra import CodeTantraScraper
+from app.services.scrapers.codingninjas import CodingNinjasScraper
 from app.services.scrapers.gfg import GfgScraper
+from app.services.scrapers.hackerearth import HackerEarthScraper
 from app.services.scrapers.hackerrank import HackerRankScraper
 from app.services.scrapers.leetcode import LeetCodeScraper
+from app.services.scrapers.takeuforward import TakeUForwardScraper
 
 logger = logging.getLogger("industry_grade_ai.fetcher")
 
@@ -44,13 +47,7 @@ async def fetch_all_platforms(
     handles: dict[str, Any], fallback_prefix: str | None = None
 ) -> list[PlatformResult]:
     """
-    Fetch stats from all 6 platforms concurrently.
-
-    `handles` should contain (possibly None) values for: codeforces,
-    leetcode, codechef, gfg, hackerrank, codetantra_url, codetantra_id.
-    Any handle left blank falls back to `fallback_prefix` (the email
-    local-part discovered at login), EXCEPT CodeTantra which requires an
-    explicit college URL.
+    Fetch stats from all 9 platforms concurrently.
     """
 
     def resolved(key: str) -> str | None:
@@ -63,6 +60,9 @@ async def fetch_all_platforms(
         gfg = GfgScraper(client)
         hr = HackerRankScraper(client)
         ct = CodeTantraScraper(client)
+        he = HackerEarthScraper(client)
+        tuf = TakeUForwardScraper(client)
+        cn = CodingNinjasScraper(client)
 
         tasks = [
             _safe_call(cf.fetch(handle=resolved("codeforces")), "codeforces"),
@@ -77,6 +77,9 @@ async def fetch_all_platforms(
                 ),
                 "codetantra",
             ),
+            _safe_call(he.fetch(handle=resolved("hackerearth")), "hackerearth"),
+            _safe_call(tuf.fetch(handle=resolved("takeuforward")), "takeuforward"),
+            _safe_call(cn.fetch(handle=resolved("codingninjas")), "codingninjas"),
         ]
         results = await asyncio.gather(*tasks, return_exceptions=True)
 

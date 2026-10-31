@@ -18,6 +18,7 @@ class PublicUserProfileResponse(BaseModel):
     linkedin: str | None = None
     instagram: str | None = None
     avatar_url: str | None = None
+    is_admin: bool = False
     created_at: datetime | None = None
     total_solved: int = 0
     composite_score: float = 0.0
@@ -41,6 +42,8 @@ class FollowUserItem(BaseModel):
     username: str
     avatar_url: str | None = None
     college: str | None = None
+    total_solved: int = 0
     composite_score: float = 0.0
     is_following: bool = False
+
 

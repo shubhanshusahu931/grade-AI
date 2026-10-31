@@ -1,6 +1,7 @@
 // src/components/userProfileModal.js — Public User Profile & Follow Modal
 import { PLATFORM_LABELS } from "../config.js";
 import { fetchUserProfile, toggleFollow } from "../services/userService.js";
+import { openFollowListModal } from "./followListModal.js";
 import { showToast } from "./toast.js";
 import { state, setUser } from "../state.js";
 
@@ -11,9 +12,13 @@ const PLATFORM_URLS = {
   gfg: (h) => `https://auth.geeksforgeeks.org/user/${h}`,
   hackerrank: (h) => `https://www.hackerrank.com/${h}`,
   codetantra_url: (url) => url,
+  hackerearth: (h) => `https://www.hackerearth.com/@${h.replace('@', '')}`,
+  takeuforward: (h) => `https://takeuforward.org/profile/${h}`,
+  codingninjas: (h) => `https://www.naukri.com/code360/profile/${h}`,
 };
 
 let currentModalUserId = null;
+let currentModalUsername = "";
 let onFollowChangedCallback = null;
 
 export function initUserProfileModal({ onFollowChanged } = {}) {
@@ -29,6 +34,25 @@ export function initUserProfileModal({ onFollowChanged } = {}) {
   modal.addEventListener("click", (e) => {
     if (e.target === modal) closeUserProfileModal();
   });
+
+  const followersBadge = document.getElementById("userProfileFollowersBadge");
+  const followingBadge = document.getElementById("userProfileFollowingBadge");
+
+  if (followersBadge) {
+    followersBadge.addEventListener("click", () => {
+      if (currentModalUserId) {
+        openFollowListModal(currentModalUserId, "followers", { username: currentModalUsername });
+      }
+    });
+  }
+
+  if (followingBadge) {
+    followingBadge.addEventListener("click", () => {
+      if (currentModalUserId) {
+        openFollowListModal(currentModalUserId, "following", { username: currentModalUsername });
+      }
+    });
+  }
 
   const followBtn = document.getElementById("userProfileFollowBtn");
   if (followBtn) {
@@ -115,6 +139,7 @@ function updateFollowBtnState(isFollowing, followersCount) {
 }
 
 function renderUserProfile(u) {
+  currentModalUsername = u.username || "";
   const avatarEl = document.getElementById("userProfileAvatar");
   const nameEl = document.getElementById("userProfileName");
   const collegeEl = document.getElementById("userProfileCollege");

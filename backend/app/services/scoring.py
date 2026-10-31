@@ -28,6 +28,9 @@ def calculate_composite_score(results: list[PlatformResult]) -> tuple[float, int
     gfg = _find(results, "gfg")
     hr = _find(results, "hackerrank")
     ct = _find(results, "codetantra")
+    he = _find(results, "hackerearth")
+    tuf = _find(results, "takeuforward")
+    cn = _find(results, "codingninjas")
 
     cf_solved = cf.solved if cf and cf.success else 0
     lc_solved = lc.solved if lc and lc.success else 0
@@ -35,11 +38,25 @@ def calculate_composite_score(results: list[PlatformResult]) -> tuple[float, int
     gfg_solved = gfg.solved if gfg and gfg.success else 0
     hr_solved = hr.solved if hr and hr.success else 0
     ct_solved = ct.solved if ct and ct.success else 0
+    he_solved = he.solved if he and he.success else 0
+    tuf_solved = tuf.solved if tuf and tuf.success else 0
+    cn_solved = cn.solved if cn and cn.success else 0
 
     cf_rating = (cf.rating or 0) if cf and cf.success else 0
     cc_rating = (cc.rating or 0) if cc and cc.success else 0
+    he_rating = (he.rating or 0) if he and he.success else 0
 
-    total_solved = cf_solved + lc_solved + cc_solved + gfg_solved + hr_solved + ct_solved
+    total_solved = (
+        cf_solved
+        + lc_solved
+        + cc_solved
+        + gfg_solved
+        + hr_solved
+        + ct_solved
+        + he_solved
+        + tuf_solved
+        + cn_solved
+    )
 
     score = (
         cf_solved * SCORE_WEIGHTS["codeforces_solved"]
@@ -48,8 +65,12 @@ def calculate_composite_score(results: list[PlatformResult]) -> tuple[float, int
         + gfg_solved * SCORE_WEIGHTS["gfg_solved"]
         + hr_solved * SCORE_WEIGHTS["hackerrank_solved"]
         + ct_solved * SCORE_WEIGHTS["codetantra_solved"]
+        + he_solved * SCORE_WEIGHTS.get("hackerearth_solved", 1.5)
+        + tuf_solved * SCORE_WEIGHTS.get("takeuforward_solved", 2.0)
+        + cn_solved * SCORE_WEIGHTS.get("codingninjas_solved", 1.5)
         + cf_rating * SCORE_WEIGHTS["codeforces_rating"]
         + cc_rating * SCORE_WEIGHTS["codechef_rating"]
+        + he_rating * SCORE_WEIGHTS.get("hackerearth_rating", 1.0)
     )
 
     return round(score, 2), total_solved

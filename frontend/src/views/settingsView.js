@@ -3,6 +3,7 @@ import { ApiError } from "../services/api.js";
 import { updateProfile } from "../services/authService.js";
 import { fetchUserHandles } from "../services/syncService.js";
 import { openUserProfileModal } from "../components/userProfileModal.js";
+import { openFollowListModal } from "../components/followListModal.js";
 import { showToast } from "../components/toast.js";
 import { state, setUser } from "../state.js";
 
@@ -14,6 +15,9 @@ const HANDLE_FIELD_IDS = {
   hackerrank: "h_hackerrank",
   codetantra_url: "h_codetantra_url",
   codetantra_id: "h_codetantra_id",
+  hackerearth: "h_hackerearth",
+  takeuforward: "h_takeuforward",
+  codingninjas: "h_codingninjas",
 };
 
 export function initSettingsView({ onSaveAndSync }) {
@@ -103,6 +107,26 @@ export function initSettingsView({ onSaveAndSync }) {
     previewProfileBtn.addEventListener("click", () => {
       if (state.user?.id) {
         openUserProfileModal(state.user.id);
+      }
+    });
+  }
+
+  // Follow list pills
+  const followersBtn = document.getElementById("settingsFollowersBtn");
+  const followingBtn = document.getElementById("settingsFollowingBtn");
+
+  if (followersBtn) {
+    followersBtn.addEventListener("click", () => {
+      if (state.user?.id) {
+        openFollowListModal(state.user.id, "followers", { username: state.user.username });
+      }
+    });
+  }
+
+  if (followingBtn) {
+    followingBtn.addEventListener("click", () => {
+      if (state.user?.id) {
+        openFollowListModal(state.user.id, "following", { username: state.user.username });
       }
     });
   }

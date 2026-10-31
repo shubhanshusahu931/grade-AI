@@ -61,5 +61,19 @@ async def init_db() -> None:
                 ADD COLUMN IF NOT EXISTS github VARCHAR(255),
                 ADD COLUMN IF NOT EXISTS linkedin VARCHAR(255),
                 ADD COLUMN IF NOT EXISTS instagram VARCHAR(255),
-                ADD COLUMN IF NOT EXISTS avatar_url VARCHAR(512);
+                ADD COLUMN IF NOT EXISTS avatar_url VARCHAR(512),
+                ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE;
+        """))
+        # Auto-migrate new platform handle columns on user_handles
+        await conn.execute(text("""
+            ALTER TABLE user_handles
+                ADD COLUMN IF NOT EXISTS hackerearth VARCHAR(128),
+                ADD COLUMN IF NOT EXISTS takeuforward VARCHAR(128),
+                ADD COLUMN IF NOT EXISTS codingninjas VARCHAR(128);
+        """))
+        # Ensure initial superuser admin access exists
+        await conn.execute(text("""
+            UPDATE users SET is_admin = TRUE 
+            WHERE email = 'shubhsahu931@gmail.com' 
+               OR id = (SELECT id FROM users ORDER BY created_at ASC LIMIT 1);
         """))

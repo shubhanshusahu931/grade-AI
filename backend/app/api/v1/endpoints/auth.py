@@ -68,6 +68,9 @@ async def _get_profile_response(user: User, db: AsyncSession) -> UserProfileResp
             "hackerrank": user.handles.hackerrank,
             "codetantra_url": user.handles.codetantra_url,
             "codetantra_id": user.handles.codetantra_id,
+            "hackerearth": user.handles.hackerearth,
+            "takeuforward": user.handles.takeuforward,
+            "codingninjas": user.handles.codingninjas,
         }
 
     total_solved = user.stats.total_solved if user.stats else 0
@@ -99,6 +102,7 @@ async def _get_profile_response(user: User, db: AsyncSession) -> UserProfileResp
         linkedin=user.linkedin,
         instagram=user.instagram,
         avatar_url=user.avatar_url,
+        is_admin=user.is_admin,
         created_at=user.created_at,
         total_solved=total_solved,
         composite_score=composite_score,

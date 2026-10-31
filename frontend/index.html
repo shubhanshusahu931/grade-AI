@@ -51,10 +51,15 @@
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
           <span>Settings</span>
         </button>
+        <button class="nav-btn nav-btn--admin" data-view="admin" id="navAdminBtn" hidden>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>Admin</span>
+        </button>
       </nav>
 
       <!-- Authenticated Profile / Logout Pill -->
       <div class="navbar__user" id="authedUserPill" hidden>
+        <button class="theme-toggle-btn" aria-label="Toggle Theme"></button>
         <div class="user-pill">
           <div class="user-avatar" id="navUserAvatar">U</div>
           <div class="user-meta">
@@ -69,6 +74,7 @@
 
       <!-- Guest Navigation Links -->
       <div class="navbar__actions" id="guestNav">
+        <button class="theme-toggle-btn" aria-label="Toggle Theme"></button>
         <button class="btn btn--ghost" id="openLoginBtn">Sign In</button>
         <button class="btn btn--primary" id="openRegisterBtn">
           <span>Get Started Free</span>
@@ -102,7 +108,7 @@
       </h1>
 
       <p class="hero__desc">
-        Seamlessly aggregate <strong>LeetCode, Codeforces, CodeChef, GeeksforGeeks, HackerRank &amp; CodeTantra</strong> into a weighted composite score, rank on global &amp; college leaderboards, and query real interview experiences with AI.
+        Seamlessly aggregate <strong>LeetCode, Codeforces, CodeChef, GeeksforGeeks, HackerRank, CodeTantra, HackerEarth, TakeUForward &amp; Coding Ninjas</strong> into a weighted composite score, rank on global &amp; college leaderboards, and query real interview experiences with AI.
       </p>
 
       <div class="hero__cta">
@@ -125,6 +131,9 @@
           <span class="platform-chip chip--gfg">GeeksforGeeks</span>
           <span class="platform-chip chip--hr">HackerRank</span>
           <span class="platform-chip chip--ct">CodeTantra</span>
+          <span class="platform-chip chip--he">HackerEarth</span>
+          <span class="platform-chip chip--tuf">TakeUForward</span>
+          <span class="platform-chip chip--cn">Coding Ninjas</span>
         </div>
       </div>
 
@@ -135,7 +144,7 @@
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
           </div>
           <h3>Concurrent Multi-Platform Sync</h3>
-          <p>Instant fault-isolated background fetching across 6 competitive judges in a single click with zero manual data entry.</p>
+          <p>Instant fault-isolated background fetching across 9 competitive judges in a single click with zero manual data entry.</p>
         </div>
 
         <div class="feature-card">
@@ -439,11 +448,11 @@
 
           <!-- Follow stats in card -->
           <div class="settings-follow-row">
-            <div class="follow-stat-pill">
+            <div class="follow-stat-pill" id="settingsFollowersBtn" role="button" tabindex="0" title="Click to view followers">
               <span class="stat-number font-mono" id="settingsFollowersCount">0</span>
               <span class="stat-name">Followers</span>
             </div>
-            <div class="follow-stat-pill">
+            <div class="follow-stat-pill" id="settingsFollowingBtn" role="button" tabindex="0" title="Click to view following">
               <span class="stat-number font-mono" id="settingsFollowingCount">0</span>
               <span class="stat-name">Following</span>
             </div>
@@ -595,6 +604,30 @@
                   <input type="text" id="h_hackerrank" placeholder="e.g. hr_coder" />
                 </div>
 
+                <div class="input-card">
+                  <div class="input-card__header">
+                    <span class="platform-dot dot--he"></span>
+                    <strong>HackerEarth</strong>
+                  </div>
+                  <input type="text" id="h_hackerearth" placeholder="e.g. @username or username" />
+                </div>
+
+                <div class="input-card">
+                  <div class="input-card__header">
+                    <span class="platform-dot dot--tuf"></span>
+                    <strong>TakeUForward (TUF)</strong>
+                  </div>
+                  <input type="text" id="h_takeuforward" placeholder="e.g. striver_handle" />
+                </div>
+
+                <div class="input-card">
+                  <div class="input-card__header">
+                    <span class="platform-dot dot--cn"></span>
+                    <strong>Coding Ninjas (CodeStudio)</strong>
+                  </div>
+                  <input type="text" id="h_codingninjas" placeholder="e.g. ninja_coder" />
+                </div>
+
                 <div class="input-card input-card--double">
                   <div class="input-card__header">
                     <span class="platform-dot dot--ct"></span>
@@ -615,6 +648,117 @@
               </div>
             </form>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- ADMIN VIEW ---------- -->
+    <section class="view" id="view-admin" hidden>
+      <div class="view-header">
+        <div>
+          <div class="admin-title-row">
+            <h2>Admin Governance &amp; Directory</h2>
+            <span class="badge badge--glow">🛡️ Superuser Console</span>
+          </div>
+          <p class="view-sub">System-wide platform overview, candidate account controls, and manual synchronization triggers.</p>
+        </div>
+        <div class="view-header__actions">
+          <button class="btn btn--outline btn--sm" id="adminRefreshBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span>Refresh Metrics</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Admin System KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-card--primary">
+          <div class="kpi-card__top">
+            <span class="kpi-label">TOTAL REGISTERED USERS</span>
+            <div class="kpi-icon icon--blue">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+          </div>
+          <div class="kpi-value font-mono" id="adminTotalUsers">0</div>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Active coding profiles</span>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-card--amber">
+          <div class="kpi-card__top">
+            <span class="kpi-label">AGGREGATE SOLVED</span>
+            <div class="kpi-icon icon--amber">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+          </div>
+          <div class="kpi-value font-mono" id="adminTotalSolved">0</div>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Across 9 competitive platforms</span>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-card--purple">
+          <div class="kpi-card__top">
+            <span class="kpi-label">AVERAGE COMPOSITE SCORE</span>
+            <div class="kpi-icon icon--purple">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+          </div>
+          <div class="kpi-value font-mono" id="adminAvgScore">0.0</div>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Platform-wide standard average</span>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-card--green">
+          <div class="kpi-card__top">
+            <span class="kpi-label">SOCIAL NETWORK CONNECTIONS</span>
+            <div class="kpi-icon icon--green">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+            </div>
+          </div>
+          <div class="kpi-value font-mono" id="adminTotalFollows">0</div>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Follower / following relations</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Directory Filter Bar -->
+      <div class="table-filter-bar">
+        <div class="search-input-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="adminUserSearch" placeholder="Filter by name, email, or institution..." />
+        </div>
+        <div class="admin-filter-controls">
+          <select id="adminRoleFilter" class="admin-select">
+            <option value="">All Roles</option>
+            <option value="candidate">Candidates Only</option>
+            <option value="admin">Admins Only</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Users Table -->
+      <div class="panel panel--table">
+        <div class="table-responsive">
+          <table class="rank-table admin-table">
+            <thead>
+              <tr>
+                <th>User Account</th>
+                <th>Role</th>
+                <th>Institution</th>
+                <th>Solved</th>
+                <th>Rating</th>
+                <th>Network</th>
+                <th style="width: 170px; text-align: right;">Manage</th>
+              </tr>
+            </thead>
+            <tbody id="adminUsersBody">
+              <tr><td colspan="7" class="empty-row">Loading user directory...</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -723,9 +867,9 @@
             <div class="profile-modal-sub">
               <span class="user-college-badge" id="userProfileCollege">Campus</span>
               <div class="profile-follow-counts">
-                <span><strong id="userProfileFollowersCount">0</strong> Followers</span>
+                <span class="clickable-follow-badge" id="userProfileFollowersBadge" role="button" tabindex="0" title="Click to view followers"><strong id="userProfileFollowersCount">0</strong> Followers</span>
                 <span class="dot-separator">•</span>
-                <span><strong id="userProfileFollowingCount">0</strong> Following</span>
+                <span class="clickable-follow-badge" id="userProfileFollowingBadge" role="button" tabindex="0" title="Click to view following"><strong id="userProfileFollowingCount">0</strong> Following</span>
               </div>
             </div>
             <p class="profile-modal-bio" id="userProfileBio">No bio added yet.</p>
@@ -769,6 +913,117 @@
     </div>
   </div>
 
+  <!-- FOLLOWERS / FOLLOWING LIST MODAL (LEETCODE STYLE) -->
+  <div class="modal-overlay" id="followListModal" hidden>
+    <div class="modal-card modal-card--follow">
+      <button class="modal__close" data-close="followListModal" aria-label="Close modal">&times;</button>
+      
+      <div class="follow-modal-header">
+        <h3 id="followModalTitle">Community Network</h3>
+        <p class="follow-modal-subtitle" id="followModalSubtitle">Competitive coders &amp; peers</p>
+      </div>
+
+      <!-- LeetCode-style Tabs -->
+      <div class="follow-tabs">
+        <button class="follow-tab active" id="followTabFollowers" type="button">
+          <span>Followers</span>
+          <span class="follow-badge-pill" id="followTabFollowersBadge">0</span>
+        </button>
+        <button class="follow-tab" id="followTabFollowing" type="button">
+          <span>Following</span>
+          <span class="follow-badge-pill" id="followTabFollowingBadge">0</span>
+        </button>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="follow-search-wrap">
+        <svg class="follow-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="followSearchInput" placeholder="Search by username or campus..." autocomplete="off" />
+        <button type="button" class="follow-search-clear" id="followSearchClear" hidden title="Clear search">&times;</button>
+      </div>
+
+      <!-- Users List -->
+      <div class="follow-list-container" id="followListContainer">
+        <div class="follow-loading" id="followListLoading" hidden>
+          <div class="follow-skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-lines">
+              <div class="skeleton-bar" style="width: 60%;"></div>
+              <div class="skeleton-bar" style="width: 40%;"></div>
+            </div>
+          </div>
+          <div class="follow-skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-lines">
+              <div class="skeleton-bar" style="width: 50%;"></div>
+              <div class="skeleton-bar" style="width: 35%;"></div>
+            </div>
+          </div>
+          <div class="follow-skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-lines">
+              <div class="skeleton-bar" style="width: 70%;"></div>
+              <div class="skeleton-bar" style="width: 45%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="follow-users-list" id="followUsersList"></div>
+
+        <div class="follow-empty" id="followEmptyState" hidden>
+          <div class="follow-empty__icon">
+            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <h4 id="followEmptyTitle">No followers yet</h4>
+          <p id="followEmptyDesc">When users follow this coder, they will appear here.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN EDIT USER MODAL -->
+  <div class="modal-overlay" id="adminEditModal" hidden>
+    <div class="modal-card">
+      <button class="modal__close" data-close="adminEditModal" aria-label="Close modal">&times;</button>
+      <div class="modal__header">
+        <div class="modal-badge modal-badge--accent">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+        </div>
+        <h2>Edit User Profile</h2>
+        <p>Modify coder details, campus institution, contact, or elevate/revoke admin status.</p>
+      </div>
+
+      <form id="adminEditForm" class="modal-form">
+        <div class="form-group">
+          <label for="adminEditName">Full Name / Username</label>
+          <input type="text" id="adminEditName" required />
+        </div>
+        <div class="form-group">
+          <label for="adminEditEmail">Email Address</label>
+          <input type="email" id="adminEditEmail" required />
+        </div>
+        <div class="form-group">
+          <label for="adminEditCollege">College / Institution</label>
+          <input type="text" id="adminEditCollege" />
+        </div>
+        <div class="form-group">
+          <label for="adminEditPhone">Phone / Contact No</label>
+          <input type="text" id="adminEditPhone" />
+        </div>
+        <div class="form-group">
+          <label for="adminEditBio">Bio</label>
+          <input type="text" id="adminEditBio" />
+        </div>
+        <div class="form-group-checkbox">
+          <label class="checkbox-label">
+            <input type="checkbox" id="adminEditIsAdmin" />
+            <span>Grant Superuser / Admin Privileges</span>
+          </label>
+        </div>
+        <button type="submit" class="btn btn--primary btn--full btn--lg">Update User Record</button>
+      </form>
+    </div>
+  </div>
 
   <!-- Global Toast Notification -->
   <div class="toast" id="toast" hidden></div>

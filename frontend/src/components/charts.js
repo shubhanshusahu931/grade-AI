@@ -7,7 +7,17 @@ export function renderPlatformChart(platforms) {
   const canvas = document.getElementById("platformChart");
   if (!canvas || typeof Chart === "undefined") return;
 
-  const ALL_PLATFORMS = ["codeforces", "leetcode", "codechef", "gfg", "hackerrank", "codetantra"];
+  const ALL_PLATFORMS = [
+    "codeforces",
+    "leetcode",
+    "codechef",
+    "gfg",
+    "hackerrank",
+    "codetantra",
+    "hackerearth",
+    "takeuforward",
+    "codingninjas",
+  ];
   const platformMap = new Map();
   (platforms || []).forEach((p) => platformMap.set(p.platform, p));
 
@@ -24,6 +34,9 @@ export function renderPlatformChart(platforms) {
     "rgba(16, 185, 129, 0.8)",   // GFG Green
     "rgba(6, 182, 212, 0.8)",    // HackerRank Cyan
     "rgba(236, 72, 153, 0.8)",   // CodeTantra Pink
+    "rgba(67, 83, 255, 0.8)",    // HackerEarth Indigo
+    "rgba(249, 115, 22, 0.8)",   // TakeUForward Orange
+    "rgba(234, 88, 12, 0.8)",    // Coding Ninjas Coral
   ];
 
   const borderColors = [
@@ -33,6 +46,9 @@ export function renderPlatformChart(platforms) {
     "#10b981",
     "#06b6d4",
     "#ec4899",
+    "#4353ff",
+    "#f97316",
+    "#ea580c",
   ];
 
   if (chartInstance) {

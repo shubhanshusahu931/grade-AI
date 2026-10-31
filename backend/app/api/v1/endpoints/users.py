@@ -41,6 +41,9 @@ async def get_user_profile(
             "hackerrank": user.handles.hackerrank,
             "codetantra_url": user.handles.codetantra_url,
             "codetantra_id": user.handles.codetantra_id,
+            "hackerearth": user.handles.hackerearth,
+            "takeuforward": user.handles.takeuforward,
+            "codingninjas": user.handles.codingninjas,
         }
 
     total_solved = user.stats.total_solved if user.stats else 0
@@ -81,6 +84,7 @@ async def get_user_profile(
         linkedin=user.linkedin,
         instagram=user.instagram,
         avatar_url=user.avatar_url,
+        is_admin=user.is_admin,
         created_at=user.created_at,
         total_solved=total_solved,
         composite_score=composite_score,
@@ -181,6 +185,7 @@ async def get_user_followers(
                 username=user.username,
                 avatar_url=user.avatar_url,
                 college=user.college,
+                total_solved=stats.total_solved if stats else 0,
                 composite_score=stats.composite_score if stats else 0.0,
                 is_following=user.id in my_follows,
             )
@@ -216,6 +221,7 @@ async def get_user_following(
                 username=user.username,
                 avatar_url=user.avatar_url,
                 college=user.college,
+                total_solved=stats.total_solved if stats else 0,
                 composite_score=stats.composite_score if stats else 0.0,
                 is_following=user.id in my_follows,
             )

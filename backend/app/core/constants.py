@@ -17,8 +17,12 @@ SCORE_WEIGHTS = {
     "gfg_solved": 1.5,
     "hackerrank_solved": 1.0,
     "codetantra_solved": 1.0,
+    "hackerearth_solved": 1.5,
+    "takeuforward_solved": 2.0,
+    "codingninjas_solved": 1.5,
     "codeforces_rating": 1.2,
     "codechef_rating": 1.0,
+    "hackerearth_rating": 1.0,
 }
 
 # --- Platform base URLs / endpoints ---
@@ -27,6 +31,9 @@ LEETCODE_GRAPHQL_URL = "https://leetcode.com/graphql"
 CODECHEF_PROFILE_BASE = "https://www.codechef.com/users"
 GFG_PROFILE_BASE = "https://www.geeksforgeeks.org/user"
 HACKERRANK_BADGES_BASE = "https://www.hackerrank.com/rest/hackers"
+HACKEREARTH_PROFILE_BASE = "https://www.hackerearth.com"
+TAKEUFORWARD_PROFILE_BASE = "https://takeuforward.org/profile"
+CODINGNINJAS_PROFILE_BASE = "https://www.naukri.com/code360/profile"
 
 PLATFORM_NAMES = [
     "codeforces",
@@ -35,6 +42,9 @@ PLATFORM_NAMES = [
     "gfg",
     "hackerrank",
     "codetantra",
+    "hackerearth",
+    "takeuforward",
+    "codingninjas",
 ]
 
 DEFAULT_REQUEST_HEADERS = {

@@ -25,5 +25,8 @@ class UserHandles(Base):
     hackerrank: Mapped[str | None] = mapped_column(String(128), nullable=True)
     codetantra_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
     codetantra_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    hackerearth: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    takeuforward: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    codingninjas: Mapped[str | None] = mapped_column(String(128), nullable=True)
 
     user: Mapped["User"] = relationship(back_populates="handles")

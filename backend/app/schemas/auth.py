@@ -46,6 +46,7 @@ class UserProfileResponse(BaseModel):
     linkedin: str | None = None
     instagram: str | None = None
     avatar_url: str | None = None
+    is_admin: bool = False
     created_at: datetime
     total_solved: int = 0
     composite_score: float = 0.0
