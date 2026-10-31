@@ -367,10 +367,16 @@
           <h2>AI Career &amp; Interview Intel</h2>
           <p class="view-sub">Ask real interview questions and retrieve structured guidance grounded in indexed tech experiences.</p>
         </div>
-        <span class="badge badge--ai">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          Powered by Gemini &amp; pgvector
-        </span>
+        <div class="rag-header-badges">
+          <span class="badge badge--ai" id="ragDocsCountBadge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            Knowledge Base: Active
+          </span>
+          <span class="badge badge--glow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            Gemini 3.8 Flash Fallback
+          </span>
+        </div>
       </div>
 
       <!-- Quick Suggestion Chips -->
@@ -407,9 +413,12 @@
         <div id="ragResultContainer" class="rag-result-container" hidden>
           <div class="rag-answer-box">
             <div class="rag-answer-header">
-              <div class="answer-badge">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                <span>AI Interview Guidance</span>
+              <div class="rag-header-left">
+                <div class="answer-badge">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  <span>AI Interview Guidance</span>
+                </div>
+                <div id="ragSourceTypePill" class="rag-source-type-wrap"></div>
               </div>
               <button class="btn-copy" id="copyAnswerBtn" title="Copy Answer">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -759,6 +768,96 @@
               <tr><td colspan="7" class="empty-row">Loading user directory...</td></tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- ======================= RAG KNOWLEDGE BASE & PDF INGESTION ======================= -->
+      <div class="panel admin-rag-panel">
+        <div class="panel__header">
+          <div class="panel__header-info">
+            <div class="admin-rag-badge-row">
+              <span class="badge badge--glow">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                AI Knowledge Engine
+              </span>
+              <span class="rag-docs-badge" id="adminRagDocsCount">0 Documents Embedded</span>
+            </div>
+            <h3>RAG Knowledge Base &amp; PDF Ingestion</h3>
+            <span class="panel-sub">Upload any company interview guide, DSA cheatsheet, or technical PDF. Chunks are automatically embedded with Gemini and stored in PostgreSQL pgvector.</span>
+          </div>
+        </div>
+
+        <!-- Upload PDF Form -->
+        <form id="adminPdfUploadForm" class="admin-pdf-form">
+          <div class="admin-pdf-grid">
+            <div class="admin-file-dropzone" id="adminFileDropzone">
+              <input type="file" id="adminPdfFile" accept=".pdf,.txt,.md" required />
+              <div class="dropzone-content">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <div class="dropzone-text">
+                  <strong id="adminFileDropLabel">Choose a PDF document or drag &amp; drop here</strong>
+                  <span>Supports .pdf, .txt, .md (up to 25 MB)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-pdf-fields">
+              <div class="form-group">
+                <label for="adminDocTitle">Document Title (Optional)</label>
+                <input type="text" id="adminDocTitle" placeholder="e.g. Google L4 DSA & System Design Guide" />
+              </div>
+
+              <div class="form-group">
+                <label for="adminDocCategory">Target Company or Category</label>
+                <input type="text" id="adminDocCategory" placeholder="e.g. Google, Amazon, DSA Patterns, System Design" list="categorySuggestions" />
+                <datalist id="categorySuggestions">
+                  <option value="Google">
+                  <option value="Amazon">
+                  <option value="Microsoft">
+                  <option value="Meta">
+                  <option value="Flipkart">
+                  <option value="DSA Patterns">
+                  <option value="System Design">
+                  <option value="General">
+                </datalist>
+              </div>
+
+              <button type="submit" class="btn btn--primary btn--full btn--lg" id="adminPdfUploadBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <span id="adminPdfUploadBtnText">Upload &amp; Index into RAG</span>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Document List -->
+        <div class="admin-doc-list-header">
+          <h4>Indexed Knowledge Documents</h4>
+          <button class="btn btn--outline btn--sm" id="adminRefreshDocsBtn" type="button">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span>Refresh Docs</span>
+          </button>
+        </div>
+
+        <div class="admin-doc-list-wrap">
+          <div class="table-responsive">
+            <table class="rank-table admin-table admin-doc-table">
+              <thead>
+                <tr>
+                  <th>Document Title</th>
+                  <th>Category</th>
+                  <th>File Size</th>
+                  <th>Chunks</th>
+                  <th>Uploaded By</th>
+                  <th>Date</th>
+                  <th style="width: 80px; text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminDocTableBody">
+                <tr><td colspan="7" class="empty-row">Loading knowledge documents...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </section>

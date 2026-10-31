@@ -15,4 +15,4 @@ class Base(DeclarativeBase):
 
 def import_all_models() -> None:
     """Import every model module so they register on Base.metadata."""
-    from app.models import user, handles, stats, interview, follow  # noqa: F401
+    from app.models import user, handles, stats, interview, follow, rag_document  # noqa: F401

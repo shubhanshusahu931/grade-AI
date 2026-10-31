@@ -323,6 +323,40 @@
   box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
 }
 
+[data-theme="light"] .admin-pdf-form {
+  background: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+}
+
+[data-theme="light"] .admin-file-dropzone {
+  background: #f1f5f9;
+  border-color: rgba(2, 132, 199, 0.4);
+}
+
+[data-theme="light"] .admin-file-dropzone:hover,
+[data-theme="light"] .admin-file-dropzone.dragover {
+  background: #e0f2fe;
+  border-color: #0284c7;
+}
+
+[data-theme="light"] .rag-docs-badge {
+  background: rgba(2, 132, 199, 0.12);
+  border-color: rgba(2, 132, 199, 0.3);
+  color: #0284c7;
+}
+
+[data-theme="light"] .rag-pill--kb {
+  background: rgba(5, 150, 105, 0.12);
+  border-color: rgba(5, 150, 105, 0.3);
+  color: #047857;
+}
+
+[data-theme="light"] .rag-pill--gemini {
+  background: rgba(2, 132, 199, 0.12);
+  border-color: rgba(2, 132, 199, 0.3);
+  color: #0284c7;
+}
+
 
 /* ======================= RESET & BASICS ======================= */
 *, *::before, *::after {

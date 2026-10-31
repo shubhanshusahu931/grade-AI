@@ -71,6 +71,29 @@ async def init_db() -> None:
                 ADD COLUMN IF NOT EXISTS takeuforward VARCHAR(128),
                 ADD COLUMN IF NOT EXISTS codingninjas VARCHAR(128);
         """))
+        # Ensure RAG documents & chunks tables exist
+        await conn.execute(text("""
+            CREATE TABLE IF NOT EXISTS rag_documents (
+                id UUID PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                filename VARCHAR(255) NOT NULL,
+                category VARCHAR(100) NOT NULL DEFAULT 'General',
+                file_size INTEGER NOT NULL DEFAULT 0,
+                total_chunks INTEGER NOT NULL DEFAULT 0,
+                uploaded_by VARCHAR(150),
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            )
+        """))
+        await conn.execute(text("""
+            CREATE TABLE IF NOT EXISTS rag_document_chunks (
+                id UUID PRIMARY KEY,
+                document_id UUID NOT NULL REFERENCES rag_documents(id) ON DELETE CASCADE,
+                chunk_index INTEGER NOT NULL,
+                content TEXT NOT NULL,
+                embedding vector(768),
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            )
+        """))
         # Ensure initial superuser admin access exists
         await conn.execute(text("""
             UPDATE users SET is_admin = TRUE 

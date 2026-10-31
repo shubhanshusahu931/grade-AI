@@ -105,18 +105,27 @@ $$\text{Composite Score} = \sum (\text{Platform Solved}_i \times W_{s,i}) + \sum
 
 ---
 
-## 5. AI Vector RAG Architecture
+## 5. AI Vector RAG Architecture & Dynamic PDF Ingestion
 
-1. **Embedding Generation**: Text queries are vectorized into 768-dimensional float arrays using `models/gemini-embedding-001` (`output_dimensionality=768`) via Google Gemini REST transport (`transport="rest"`).
-2. **Similarity Retrieval**: PostgreSQL pgvector performs an HNSW cosine distance search:
-   ```sql
-   SELECT content, company, role, 1 - (embedding <=> :query_vector) AS similarity
-   FROM interview_posts
-   WHERE (company = :company OR :company IS NULL)
-   ORDER BY embedding <=> :query_vector ASC
-   LIMIT 4;
-   ```
-3. **Response Synthesis**: `models/gemini-3.1-flash-lite` generates grounded, contextual preparation advice with source citations. If quota limits are reached, the system gracefully falls back to structured chunk extraction.
+1. **Multi-Source Embedding & Dynamic Knowledge Base**:
+   - **Gemini Embeddings**: Text queries and document chunks are vectorized into 768-dimensional float arrays using `models/gemini-embedding-001` (`output_dimensionality=768`) via Google Gemini REST transport (`transport="rest"`).
+   - **Admin PDF Document Ingestion**:
+     - Superusers/Admins can upload any company interview guide, DSA cheatsheet, or technical PDF via the Admin Panel.
+     - Dual-engine parsing via **PyMuPDF (`fitz`)** with automatic fallback to **pypdf**.
+     - Intelligent semantic chunking (800 characters with 120 character overlap, respecting paragraph & sentence boundaries).
+     - Fast batch embedding via Gemini, persisted in PostgreSQL `rag_documents` and `rag_document_chunks` with `ON DELETE CASCADE`.
+2. **Two-Tier Search Strategy (Knowledge Base First, Gemini Fallback)**:
+   - When a user asks an interview or technical question, the system queries both uploaded PDF documents and community interview posts using PostgreSQL pgvector cosine distance (`<=>`):
+     ```sql
+     SELECT c.content, d.title, d.category, 1 - (c.embedding <=> :query_vector) AS similarity
+     FROM rag_document_chunks c
+     JOIN rag_documents d ON c.document_id = d.id
+     ORDER BY c.embedding <=> :query_vector ASC
+     LIMIT 4;
+     ```
+   - **Tier 1 (Grounded in Uploaded Documents)**: If retrieved chunks meet the similarity threshold (`>= 0.38`), Gemini synthesizes an answer directly grounded in the uploaded PDF context, citing the document titles and categories.
+   - **Tier 2 (Gemini General Intelligence Fallback)**: If no uploaded document matches or similarity is below threshold, the query seamlessly routes directly to `models/gemini-3.8-flash` to answer from Gemini's comprehensive programming and interview intelligence.
+3. **Response Synthesis**: `models/gemini-3.8-flash` (with fallback to `gemini-3.1-flash-lite` and `gemini-flash-latest`) provides structured, actionable advice with source cards or AI fallback tags. If network quota limits are ever reached, the system gracefully formats the context chunks directly.
 
 ---
 

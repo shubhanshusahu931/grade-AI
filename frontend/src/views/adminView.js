@@ -6,6 +6,11 @@ import {
   deleteAdminUser,
   forceSyncAdminUser,
 } from "../services/adminService.js";
+import {
+  fetchRagDocuments,
+  uploadRagDocument,
+  deleteRagDocument,
+} from "../services/ragService.js";
 import { showToast } from "../components/toast.js";
 import { state } from "../state.js";
 
@@ -250,9 +255,176 @@ export function initAdminView() {
     });
   }
 
+  // ======================= RAG KNOWLEDGE BASE MANAGEMENT =======================
+  const docTableBody = document.getElementById("adminDocTableBody");
+  const ragDocsCountEl = document.getElementById("adminRagDocsCount");
+  const refreshDocsBtn = document.getElementById("adminRefreshDocsBtn");
+  const uploadForm = document.getElementById("adminPdfUploadForm");
+  const fileInput = document.getElementById("adminPdfFile");
+  const dropzone = document.getElementById("adminFileDropzone");
+  const dropLabel = document.getElementById("adminFileDropLabel");
+  const docTitleInput = document.getElementById("adminDocTitle");
+  const docCategoryInput = document.getElementById("adminDocCategory");
+  const uploadBtn = document.getElementById("adminPdfUploadBtn");
+  const uploadBtnText = document.getElementById("adminPdfUploadBtnText");
+
+  async function loadRagDocuments() {
+    if (docTableBody) {
+      docTableBody.innerHTML = `<tr><td colspan="7" class="empty-row">Loading knowledge documents...</td></tr>`;
+    }
+    try {
+      const docs = await fetchRagDocuments();
+      if (ragDocsCountEl) {
+        ragDocsCountEl.textContent = `${docs.length} Document${docs.length === 1 ? "" : "s"} Embedded`;
+      }
+
+      if (!docTableBody) return;
+      if (docs.length === 0) {
+        docTableBody.innerHTML = `<tr><td colspan="7" class="empty-row">No knowledge documents uploaded yet. Upload a company PDF above to empower RAG intelligence!</td></tr>`;
+        return;
+      }
+
+      docTableBody.innerHTML = docs
+        .map((d) => {
+          const sizeKb = (d.file_size / 1024).toFixed(1);
+          const dateStr = d.created_at ? new Date(d.created_at).toLocaleDateString() : "Just now";
+          return `
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar-small" style="background:linear-gradient(135deg, #0284c7, #6366f1);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div>
+                  <div class="user-cell__info">
+                    <strong>${escapeHtml(d.title)}</strong>
+                    <span class="user-cell__email font-mono">${escapeHtml(d.filename)}</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="tag tag--college">${escapeHtml(d.category || "General")}</span></td>
+              <td><span class="font-mono" style="font-size:0.85rem;">${sizeKb} KB</span></td>
+              <td><span class="badge badge--glow font-mono" style="font-size:0.75rem;">${d.total_chunks} chunks</span></td>
+              <td><span style="font-size:0.85rem; color:var(--text-secondary);">${escapeHtml(d.uploaded_by || "Admin")}</span></td>
+              <td><span style="font-size:0.82rem; color:var(--text-muted);">${dateStr}</span></td>
+              <td style="text-align: right;">
+                <button class="btn btn--danger-sm delete-doc-btn" data-doc-id="${d.id}" title="Delete document">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+
+      // Wire delete buttons
+      docTableBody.querySelectorAll(".delete-doc-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const docId = btn.getAttribute("data-doc-id");
+          if (!docId) return;
+          if (!confirm("Are you sure you want to delete this document and all its embedded vectors?")) return;
+
+          btn.disabled = true;
+          try {
+            await deleteRagDocument(docId);
+            showToast("Document deleted successfully", "default");
+            loadRagDocuments();
+          } catch (err) {
+            showToast(err.message || "Failed to delete document", "error");
+            btn.disabled = false;
+          }
+        });
+      });
+    } catch {
+      if (docTableBody) {
+        docTableBody.innerHTML = `<tr><td colspan="7" class="empty-row" style="color:var(--accent-rose);">Failed to load documents.</td></tr>`;
+      }
+    }
+  }
+
+  // Refresh docs button
+  if (refreshDocsBtn) {
+    refreshDocsBtn.addEventListener("click", () => {
+      loadRagDocuments();
+      showToast("Knowledge documents refreshed", "default");
+    });
+  }
+
+  // File dropzone behavior
+  if (fileInput && dropLabel) {
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files?.[0];
+      if (file) {
+        dropLabel.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+        if (docTitleInput && !docTitleInput.value.trim()) {
+          const rawName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+          docTitleInput.value = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+        }
+      } else {
+        dropLabel.textContent = "Choose a PDF document or drag & drop here";
+      }
+    });
+  }
+
+  if (dropzone && fileInput) {
+    ["dragenter", "dragover"].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.add("dragover");
+      });
+    });
+    ["dragleave", "drop"].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove("dragover");
+      });
+    });
+    dropzone.addEventListener("drop", (e) => {
+      if (e.dataTransfer?.files?.length) {
+        fileInput.files = e.dataTransfer.files;
+        fileInput.dispatchEvent(new Event("change"));
+      }
+    });
+  }
+
+  // Upload Form Submit
+  if (uploadForm) {
+    uploadForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const file = fileInput?.files?.[0];
+      if (!file) {
+        showToast("Please select a document to upload", "error");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+      if (docTitleInput?.value.trim()) {
+        formData.append("title", docTitleInput.value.trim());
+      }
+      if (docCategoryInput?.value.trim()) {
+        formData.append("category", docCategoryInput.value.trim());
+      }
+
+      if (uploadBtn) uploadBtn.disabled = true;
+      if (uploadBtnText) uploadBtnText.textContent = "Embedding with Gemini... (may take 5-15s)";
+
+      try {
+        const res = await uploadRagDocument(formData);
+        showToast(res.message || "Document indexed successfully!", "success");
+        uploadForm.reset();
+        if (dropLabel) dropLabel.textContent = "Choose a PDF document or drag & drop here";
+        loadRagDocuments();
+      } catch (err) {
+        showToast(err.message || "Upload failed", "error");
+      } finally {
+        if (uploadBtn) uploadBtn.disabled = false;
+        if (uploadBtnText) uploadBtnText.textContent = "Upload & Index into RAG";
+      }
+    });
+  }
+
   function load() {
     loadStats();
     loadUsers();
+    loadRagDocuments();
   }
 
   return { load };
