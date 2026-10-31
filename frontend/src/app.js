@@ -2,6 +2,7 @@
 import { initAuthModal } from "./components/authModal.js";
 import { initNavbar } from "./components/navbar.js";
 import { initRagChat } from "./components/ragChat.js";
+import { initUserProfileModal } from "./components/userProfileModal.js";
 import { isAuthenticated, setUser, setLatestSync } from "./state.js";
 import { initDashboardView } from "./views/dashboardView.js";
 import { initLeaderboardView } from "./views/leaderboardView.js";
@@ -31,9 +32,25 @@ async function syncUserData(dashboard) {
 }
 
 function bootstrap() {
-  const dashboard = initDashboardView();
+  let navbar;
+
+  const navigateTo = (view) => {
+    showView(view);
+    if (navbar) navbar.setActiveView(view);
+    if (view === "leaderboard") leaderboard.load();
+    if (view === "settings") settings.loadHandles();
+    if (view === "dashboard") dashboard.refreshFromState();
+  };
+
+  const dashboard = initDashboardView({ onNavigate: navigateTo });
   const leaderboard = initLeaderboardView();
   initRagChat();
+
+  initUserProfileModal({
+    onFollowChanged: () => {
+      dashboard.refreshGreeting();
+    },
+  });
 
   const settings = initSettingsView({
     onSaveAndSync: async (overrides) => {
@@ -43,20 +60,13 @@ function bootstrap() {
     },
   });
 
-  const navbar = initNavbar({
-    onNavigate: (view) => {
-      showView(view);
-      navbar.setActiveView(view);
-      if (view === "leaderboard") leaderboard.load();
-      if (view === "settings") settings.loadHandles();
-      if (view === "dashboard") dashboard.refreshFromState();
-    },
+  navbar = initNavbar({
+    onNavigate: navigateTo,
   });
 
   initAuthModal({
     onAuthenticated: async () => {
-      showView("dashboard");
-      navbar.setActiveView("dashboard");
+      navigateTo("dashboard");
       await syncUserData(dashboard);
       // Run sync in background if never synced
       dashboard.runSync();
@@ -65,8 +75,7 @@ function bootstrap() {
 
   // Returning user session bootstrap
   if (isAuthenticated()) {
-    showView("dashboard");
-    navbar.setActiveView("dashboard");
+    navigateTo("dashboard");
     syncUserData(dashboard);
   }
 }

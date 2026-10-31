@@ -35,3 +35,4 @@ class UserFollow(Base):
     following: Mapped["User"] = relationship(
         "User", foreign_keys=[following_id], back_populates="follower_relations"
     )
+

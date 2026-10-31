@@ -39,9 +39,29 @@ class UserProfileResponse(BaseModel):
     id: uuid.UUID
     username: str
     email: EmailStr
-    college: str | None
+    college: str | None = None
+    bio: str | None = None
+    phone: str | None = None
+    github: str | None = None
+    linkedin: str | None = None
+    instagram: str | None = None
+    avatar_url: str | None = None
     created_at: datetime
     total_solved: int = 0
     composite_score: float = 0.0
+    followers_count: int = 0
+    following_count: int = 0
     last_synced_at: datetime | None = None
     handles: dict[str, str | None] = Field(default_factory=dict)
+
+
+class ProfileUpdateRequest(BaseModel):
+    username: str | None = Field(default=None, min_length=2, max_length=64)
+    college: str | None = Field(default=None, max_length=255)
+    bio: str | None = Field(default=None, max_length=500)
+    phone: str | None = Field(default=None, max_length=32)
+    github: str | None = Field(default=None, max_length=255)
+    linkedin: str | None = Field(default=None, max_length=255)
+    instagram: str | None = Field(default=None, max_length=255)
+    avatar_url: str | None = Field(default=None, max_length=512)
+

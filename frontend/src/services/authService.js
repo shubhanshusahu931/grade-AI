@@ -24,3 +24,12 @@ export async function fetchCurrentUser() {
     auth: true,
   });
 }
+
+export async function updateProfile(data) {
+  return apiFetch("/auth/profile", {
+    method: "PUT",
+    auth: true,
+    body: data,
+  });
+}
+

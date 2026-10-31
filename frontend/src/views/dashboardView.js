@@ -2,20 +2,75 @@
 import { PLATFORM_LABELS } from "../config.js";
 import { ApiError } from "../services/api.js";
 import { syncProfile, fetchSyncStatus } from "../services/syncService.js";
-import { setLatestSync, state } from "../state.js";
+import { setLatestSync, setView, state } from "../state.js";
 import { renderPlatformChart } from "../components/charts.js";
 import { renderStatsCards } from "../components/statsCards.js";
 import { showToast } from "../components/toast.js";
 
-export function initDashboardView() {
+export function initDashboardView({ onNavigate } = {}) {
   const syncBtn = document.getElementById("syncBtn");
   const syncBtnText = document.getElementById("syncBtnText");
   const syncDetails = document.getElementById("syncDetails");
   const greetingName = document.getElementById("dashGreetingName");
+  const userBioEl = document.getElementById("dashUserBio");
+  const followersCountEl = document.getElementById("dashFollowersCount");
+  const followingCountEl = document.getElementById("dashFollowingCount");
+  const socialsBarEl = document.getElementById("dashSocialsBar");
+  const editProfileBtn = document.getElementById("dashEditProfileBtn");
+
+  if (editProfileBtn) {
+    editProfileBtn.addEventListener("click", () => {
+      setView("settings");
+      if (onNavigate) onNavigate("settings");
+    });
+  }
 
   function refreshGreeting() {
-    if (greetingName && state.user) {
-      greetingName.textContent = state.user.username || "Developer";
+    if (!state.user) return;
+    const u = state.user;
+
+    if (greetingName) {
+      greetingName.textContent = u.username || "Developer";
+    }
+
+    if (userBioEl) {
+      if (u.bio) {
+        userBioEl.textContent = u.bio;
+        userBioEl.style.display = "block";
+      } else {
+        userBioEl.style.display = "none";
+      }
+    }
+
+    if (followersCountEl) {
+      followersCountEl.textContent = u.followers_count ?? 0;
+    }
+
+    if (followingCountEl) {
+      followingCountEl.textContent = u.following_count ?? 0;
+    }
+
+    if (socialsBarEl) {
+      const links = [];
+      if (u.github) {
+        const gh = u.github.startsWith("http") ? u.github : `https://github.com/${u.github}`;
+        links.push(`<a href="${escapeHtml(gh)}" target="_blank" rel="noopener" class="dash-social-pill" title="GitHub">GitHub</a>`);
+      }
+      if (u.linkedin) {
+        const li = u.linkedin.startsWith("http") ? u.linkedin : `https://linkedin.com/in/${u.linkedin}`;
+        links.push(`<a href="${escapeHtml(li)}" target="_blank" rel="noopener" class="dash-social-pill" title="LinkedIn">LinkedIn</a>`);
+      }
+      if (u.instagram) {
+        const ig = u.instagram.replace("@", "");
+        const url = ig.startsWith("http") ? ig : `https://instagram.com/${ig}`;
+        links.push(`<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="dash-social-pill" title="Instagram">Instagram</a>`);
+      }
+      if (u.phone) {
+        links.push(`<a href="tel:${escapeHtml(u.phone)}" class="dash-social-pill" title="Contact No">${escapeHtml(u.phone)}</a>`);
+      }
+
+      socialsBarEl.innerHTML = links.join("");
+      socialsBarEl.style.display = links.length > 0 ? "flex" : "none";
     }
   }
 
@@ -101,4 +156,11 @@ export function initDashboardView() {
   }
 
   return { runSync, refreshFromState, loadCachedStats, refreshGreeting };
+}
+
+function escapeHtml(str) {
+  if (!str) return "";
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
 }

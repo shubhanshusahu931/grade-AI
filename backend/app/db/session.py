@@ -53,3 +53,13 @@ async def init_db() -> None:
     async with engine.begin() as conn:
         await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
         await conn.run_sync(Base.metadata.create_all)
+        # Auto-migrate new profile & social columns if they do not exist
+        await conn.execute(text("""
+            ALTER TABLE users 
+                ADD COLUMN IF NOT EXISTS bio TEXT,
+                ADD COLUMN IF NOT EXISTS phone VARCHAR(32),
+                ADD COLUMN IF NOT EXISTS github VARCHAR(255),
+                ADD COLUMN IF NOT EXISTS linkedin VARCHAR(255),
+                ADD COLUMN IF NOT EXISTS instagram VARCHAR(255),
+                ADD COLUMN IF NOT EXISTS avatar_url VARCHAR(512);
+        """))
