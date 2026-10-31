@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Industry Grade AI — Competitive Programming & Career Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- Background decorative light gradients -->
+  <div class="bg-glow bg-glow--top"></div>
+  <div class="bg-glow bg-glow--bottom"></div>
+
+  <!-- ======================= NAVBAR ======================= -->
+  <header class="navbar">
+    <div class="navbar__container">
+      <div class="navbar__brand" id="brandHomeBtn">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Industry Grade <span class="gradient-text">AI</span></span>
+          <span class="brand-badge">PRO v1.0</span>
+        </div>
+      </div>
+
+      <!-- Authenticated Navigation Links -->
+      <nav class="navbar__nav" id="authedNav" hidden>
+        <button class="nav-btn active" data-view="dashboard">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-btn" data-view="leaderboard">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34"></path><path d="M18 17v-2.34"></path><path d="M14 17v-2.34"></path><path d="M6 2h12v7a6 6 0 0 1-12 0V2Z"></path></svg>
+          <span>Leaderboard</span>
+        </button>
+        <button class="nav-btn" data-view="rag">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a8 8 0 0 0-8 8c0 3.36 2.07 6.23 5 7.42V20a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2.58A8.002 8.002 0 0 0 12 2Z"></path><path d="M9 10h6"></path><path d="M12 7v6"></path></svg>
+          <span>AI Intel Search</span>
+        </button>
+        <button class="nav-btn" data-view="settings">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <!-- Authenticated Profile / Logout Pill -->
+      <div class="navbar__user" id="authedUserPill" hidden>
+        <div class="user-pill">
+          <div class="user-avatar" id="navUserAvatar">U</div>
+          <div class="user-meta">
+            <span class="user-name" id="navUserName">Coder</span>
+            <span class="user-college" id="navUserCollege">Campus</span>
+          </div>
+        </div>
+        <button class="btn-icon" id="logoutBtn" title="Logout">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+      </div>
+
+      <!-- Guest Navigation Links -->
+      <div class="navbar__actions" id="guestNav">
+        <button class="btn btn--ghost" id="openLoginBtn">Sign In</button>
+        <button class="btn btn--primary" id="openRegisterBtn">
+          <span>Get Started Free</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation Hamburger -->
+      <button class="mobile-toggle" id="mobileMenuBtn" aria-label="Toggle Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Drawer -->
+  <div class="mobile-drawer" id="mobileDrawer" hidden>
+    <div class="mobile-drawer__links" id="mobileDrawerNav"></div>
+  </div>
+
+  <!-- ======================= GUEST HERO ======================= -->
+  <section class="hero" id="guestHero">
+    <div class="hero__container">
+      <div class="hero__badge">
+        <span class="pulse-dot"></span>
+        <span>Unified Competitive Programming Analytics & AI Assistant</span>
+      </div>
+
+      <h1 class="hero__title">
+        Turn Your Code Submissions Into <br/>
+        <span class="gradient-text">Industry Career Intelligence.</span>
+      </h1>
+
+      <p class="hero__desc">
+        Seamlessly aggregate <strong>LeetCode, Codeforces, CodeChef, GeeksforGeeks, HackerRank &amp; CodeTantra</strong> into a weighted composite score, rank on global &amp; college leaderboards, and query real interview experiences with AI.
+      </p>
+
+      <div class="hero__cta">
+        <button class="btn btn--primary btn--lg" id="heroRegisterBtn">
+          <span>Claim Your Profile Now</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </button>
+        <button class="btn btn--outline btn--lg" id="heroLoginBtn">
+          <span>Existing Account? Sign In</span>
+        </button>
+      </div>
+
+      <!-- Platform Logos ticker -->
+      <div class="platforms-ticker">
+        <span class="ticker-label">Supported Judge Ecosystem:</span>
+        <div class="ticker-badges">
+          <span class="platform-chip chip--cf">Codeforces</span>
+          <span class="platform-chip chip--lc">LeetCode</span>
+          <span class="platform-chip chip--cc">CodeChef</span>
+          <span class="platform-chip chip--gfg">GeeksforGeeks</span>
+          <span class="platform-chip chip--hr">HackerRank</span>
+          <span class="platform-chip chip--ct">CodeTantra</span>
+        </div>
+      </div>
+
+      <!-- Feature Grid -->
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-card__icon icon--blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          </div>
+          <h3>Concurrent Multi-Platform Sync</h3>
+          <p>Instant fault-isolated background fetching across 6 competitive judges in a single click with zero manual data entry.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-card__icon icon--amber">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </div>
+          <h3>Normalized Composite Scoring</h3>
+          <p>Standardized weighted algorithm rewarding problem difficulty, ratings, contest performance, and continuous practice.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-card__icon icon--purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
+          </div>
+          <h3>AI Vector Career RAG Intel</h3>
+          <p>Ask real interview preparation questions and get grounded answers backed by indexed FAANG and tier-1 experiences.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= MAIN APP ======================= -->
+  <main class="app" id="app" hidden>
+
+    <!-- ---------- DASHBOARD VIEW ---------- -->
+    <section class="view" id="view-dashboard">
+      <!-- Dashboard Top Banner -->
+      <div class="dashboard-banner">
+        <div class="dashboard-banner__info">
+          <span class="badge badge--glow">
+            <span class="pulse-dot"></span> Live Analytics Engine
+          </span>
+          <h2 class="dashboard-title">Welcome back, <span id="dashGreetingName" class="gradient-text">Developer</span></h2>
+          <p class="dashboard-subtitle">Here is your synchronized coding stats overview across all registered platforms.</p>
+        </div>
+        <div class="dashboard-banner__actions">
+          <button class="btn btn--primary" id="syncBtn">
+            <svg class="sync-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span id="syncBtnText">Sync All Platforms</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Stat Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-card--primary">
+          <div class="kpi-card__top">
+            <span class="kpi-label">TOTAL PROBLEMS SOLVED</span>
+            <div class="kpi-icon icon--blue">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+          </div>
+          <div class="kpi-value font-mono" id="statTotalSolved">0</div>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Across all 6 platforms combined</span>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-card--amber">
+          <div class="kpi-card__top">
+            <span class="kpi-label">COMPOSITE SCORE</span>
+            <div class="kpi-icon icon--amber">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+          </div>
+          <div class="kpi-value font-mono" id="statCompositeScore">0.00</div>
+          <div class="kpi-footer">
+            <span class="tier-badge" id="statTierBadge">Novice Tier</span>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-card--purple">
+          <div class="kpi-card__top">
+            <span class="kpi-label">STANDINGS &amp; RANK</span>
+            <div class="kpi-icon icon--purple">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M6 2h12v7a6 6 0 0 1-12 0V2Z"></path></svg>
+            </div>
+          </div>
+          <div class="kpi-value font-mono" id="statRankDisplay">--</div>
+          <div class="kpi-footer">
+            <span class="kpi-subtext" id="statRankSubtext">Global leaderboard</span>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-card--green">
+          <div class="kpi-card__top">
+            <span class="kpi-label">SYNC FRESHNESS</span>
+            <div class="kpi-icon icon--green">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+          </div>
+          <div class="kpi-value kpi-value--small font-mono" id="statLastSynced">Never</div>
+          <div class="kpi-footer">
+            <span class="status-indicator" id="statStatusIndicator">
+              <span class="status-dot"></span> Ready to sync
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Platform Cards Section -->
+      <div class="section-title">
+        <h3>Platform Performance Breakdown</h3>
+        <span class="section-subtitle">Real-time stats per competitive platform</span>
+      </div>
+
+      <div class="platform-cards-grid" id="platformCardsGrid">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Analytics & Chart Section -->
+      <div class="analytics-row">
+        <div class="panel panel--chart">
+          <div class="panel__header">
+            <div>
+              <h3>Problem Distribution</h3>
+              <span class="panel-sub">Solved count per platform</span>
+            </div>
+            <span class="badge">Visualizer</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="platformChart" height="110"></canvas>
+          </div>
+        </div>
+
+        <div class="panel panel--feed">
+          <div class="panel__header">
+            <div>
+              <h3>Sync Log &amp; Status</h3>
+              <span class="panel-sub">Per-judge scraper fetch diagnosis</span>
+            </div>
+          </div>
+          <div id="syncDetails" class="sync-details-list">
+            <div class="empty-state">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              <span>Click "Sync All Platforms" to fetch live stats.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- LEADERBOARD VIEW ---------- -->
+    <section class="view" id="view-leaderboard" hidden>
+      <div class="view-header">
+        <div>
+          <h2>Platform Leaderboard</h2>
+          <p class="view-sub">Real-time rankings calculated using the normalized composite scoring system.</p>
+        </div>
+        <div class="tabs-container">
+          <div class="tabs">
+            <button class="tab-btn active" data-scope="global">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              <span>Global</span>
+            </button>
+            <button class="tab-btn" data-scope="college">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+              <span>My Campus</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top 3 Podium Cards -->
+      <div class="podium-container" id="leaderboardPodium">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Table Filter Bar -->
+      <div class="table-filter-bar">
+        <div class="search-input-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="leaderboardSearch" placeholder="Search coder or university..." />
+        </div>
+        <span class="table-count" id="leaderboardCount">Showing top ranks</span>
+      </div>
+
+      <div class="panel panel--table">
+        <div class="table-responsive">
+          <table class="rank-table">
+            <thead>
+              <tr>
+                <th style="width: 80px;">Rank</th>
+                <th>Candidate</th>
+                <th>Institution</th>
+                <th>Problems Solved</th>
+                <th>Composite Rating</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+              <tr><td colspan="5" class="empty-row">Loading leaderboard...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- RAG SEARCH VIEW ---------- -->
+    <section class="view" id="view-rag" hidden>
+      <div class="view-header">
+        <div>
+          <h2>AI Career &amp; Interview Intel</h2>
+          <p class="view-sub">Ask real interview questions and retrieve structured guidance grounded in indexed tech experiences.</p>
+        </div>
+        <span class="badge badge--ai">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Powered by Gemini &amp; pgvector
+        </span>
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="rag-suggestions">
+        <span class="suggestions-label">Popular queries:</span>
+        <button class="chip-query" data-query="Google SDE Intern interview questions and rounds">Google SDE Intern</button>
+        <button class="chip-query" data-query="Amazon SDE-1 Leadership Principles and coding questions">Amazon SDE-1</button>
+        <button class="chip-query" data-query="Microsoft SDE Intern DSA and OOP design questions">Microsoft OOP &amp; DSA</button>
+        <button class="chip-query" data-query="Flipkart SDE-2 system design rate limiter Redis">Flipkart System Design</button>
+      </div>
+
+      <div class="panel panel--rag">
+        <form id="ragForm" class="rag-form">
+          <div class="rag-input-group">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="ragQuery" placeholder="Ask anything (e.g. Google DP questions, Amazon LRU cache round, system design)..." required />
+          </div>
+          <div class="rag-company-group">
+            <input type="text" id="ragCompany" placeholder="Filter company (optional)" />
+          </div>
+          <button type="submit" class="btn btn--primary" id="ragSubmitBtn">
+            <span id="ragBtnText">Ask AI Assistant</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          </button>
+        </form>
+
+        <div id="ragLoading" class="rag-loading" hidden>
+          <div class="ai-pulse-spinner">
+            <div class="spinner-circle"></div>
+            <span>Searching vector embeddings and synthesizing interview intelligence...</span>
+          </div>
+        </div>
+
+        <div id="ragResultContainer" class="rag-result-container" hidden>
+          <div class="rag-answer-box">
+            <div class="rag-answer-header">
+              <div class="answer-badge">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <span>AI Interview Guidance</span>
+              </div>
+              <button class="btn-copy" id="copyAnswerBtn" title="Copy Answer">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <div id="ragAnswer" class="rag-answer"></div>
+          </div>
+
+          <div class="rag-sources-wrap">
+            <h4>Indexed Source Chunks &amp; Similarity</h4>
+            <div id="ragSources" class="rag-sources-grid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- SETTINGS VIEW ---------- -->
+    <section class="view" id="view-settings" hidden>
+      <div class="view-header">
+        <div>
+          <h2>Judge Profiles &amp; Handles</h2>
+          <p class="view-sub">Configure your specific username handles across competitive judges to ensure accurate synchronization.</p>
+        </div>
+      </div>
+
+      <div class="settings-grid">
+        <!-- Profile summary card -->
+        <div class="panel settings-user-card">
+          <div class="user-large-avatar" id="settingsAvatar">U</div>
+          <h3 id="settingsUserName">Username</h3>
+          <span class="user-email font-mono" id="settingsUserEmail">user@example.com</span>
+          <span class="user-college-badge" id="settingsUserCollege">Campus</span>
+
+          <div class="settings-notice">
+            <div class="notice-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            </div>
+            <p>Handles left empty automatically fall back to your email prefix (<strong id="settingsPrefixBadge">...</strong>) during synchronization.</p>
+          </div>
+        </div>
+
+        <!-- Handles form -->
+        <div class="panel settings-form-panel">
+          <h3>Platform Handle Overrides</h3>
+          <p class="hint">Enter your actual platform usernames below if they differ from your email prefix.</p>
+
+          <form id="handlesForm" class="handles-form">
+            <div class="input-card">
+              <div class="input-card__header">
+                <span class="platform-dot dot--cf"></span>
+                <strong>Codeforces</strong>
+              </div>
+              <input type="text" id="h_codeforces" placeholder="e.g. tourist" />
+            </div>
+
+            <div class="input-card">
+              <div class="input-card__header">
+                <span class="platform-dot dot--lc"></span>
+                <strong>LeetCode</strong>
+              </div>
+              <input type="text" id="h_leetcode" placeholder="e.g. neal_wu" />
+            </div>
+
+            <div class="input-card">
+              <div class="input-card__header">
+                <span class="platform-dot dot--cc"></span>
+                <strong>CodeChef</strong>
+              </div>
+              <input type="text" id="h_codechef" placeholder="e.g. genady" />
+            </div>
+
+            <div class="input-card">
+              <div class="input-card__header">
+                <span class="platform-dot dot--gfg"></span>
+                <strong>GeeksforGeeks</strong>
+              </div>
+              <input type="text" id="h_gfg" placeholder="e.g. geeks_handle" />
+            </div>
+
+            <div class="input-card">
+              <div class="input-card__header">
+                <span class="platform-dot dot--hr"></span>
+                <strong>HackerRank</strong>
+              </div>
+              <input type="text" id="h_hackerrank" placeholder="e.g. hr_coder" />
+            </div>
+
+            <div class="input-card input-card--double">
+              <div class="input-card__header">
+                <span class="platform-dot dot--ct"></span>
+                <strong>CodeTantra (College Portal)</strong>
+              </div>
+              <div class="double-input">
+                <input type="text" id="h_codetantra_url" placeholder="Portal URL: https://yourcollege.codetantra.com" />
+                <input type="text" id="h_codetantra_id" placeholder="Student ID: 2024CS101" />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn--primary btn--lg">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                <span>Save Handles &amp; Sync</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================= AUTH MODALS ======================= -->
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay" id="loginModal" hidden>
+    <div class="modal-card">
+      <button class="modal__close" data-close="loginModal" aria-label="Close modal">&times;</button>
+      <div class="modal__header">
+        <div class="modal-badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+        </div>
+        <h2>Sign In</h2>
+        <p>Access your aggregated competitive programming intelligence dashboard.</p>
+      </div>
+
+      <form id="loginForm" class="modal-form">
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" placeholder="you@university.edu" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <div class="form-error" id="loginError"></div>
+        <button type="submit" class="btn btn--primary btn--full btn--lg">Sign In</button>
+      </form>
+
+      <div class="modal__footer">
+        <span>Don't have an account yet?</span>
+        <button class="btn-link" id="switchToRegister">Create Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTER MODAL -->
+  <div class="modal-overlay" id="registerModal" hidden>
+    <div class="modal-card">
+      <button class="modal__close" data-close="registerModal" aria-label="Close modal">&times;</button>
+      <div class="modal__header">
+        <div class="modal-badge modal-badge--accent">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+        </div>
+        <h2>Create Account</h2>
+        <p>Join Industry Grade AI and unify your coding journey across judges.</p>
+      </div>
+
+      <form id="registerForm" class="modal-form">
+        <div class="form-group">
+          <label for="regUsername">Full Name / Username</label>
+          <input type="text" id="regUsername" placeholder="e.g. John Doe" required minlength="2" autocomplete="name" />
+        </div>
+        <div class="form-group">
+          <label for="regEmail">Email Address</label>
+          <input type="email" id="regEmail" placeholder="e.g. john@medicaps.ac.in" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="regPassword">Password (min 8 characters)</label>
+          <input type="password" id="regPassword" placeholder="••••••••" required minlength="8" autocomplete="new-password" />
+        </div>
+        <div class="form-group">
+          <label for="regCollege">College / University (optional)</label>
+          <input type="text" id="regCollege" placeholder="e.g. Medi-Caps University" />
+        </div>
+        <div class="form-error" id="registerError"></div>
+        <button type="submit" class="btn btn--primary btn--full btn--lg">Complete Registration</button>
+      </form>
+
+      <div class="modal__footer">
+        <span>Already have an account?</span>
+        <button class="btn-link" id="switchToLogin">Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Toast Notification -->
+  <div class="toast" id="toast" hidden></div>
+
+  <!-- Application Bootstrap -->
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: industry-grade-ai-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ind_grade_ai
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: industry-grade-ai-backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      # Overrides whatever DATABASE_URL is in .env -- inside the Docker
+      # network the DB is reachable at hostname "db", not "localhost".
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/ind_grade_ai
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  frontend:
+    image: nginx:alpine
+    container_name: industry-grade-ai-frontend
+    restart: unless-stopped
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    ports:
+      - "5500:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
